@@ -14,23 +14,23 @@ class Keyboard {
     createKeyboard(){
         this.keyboardElem.classList.add('keyboard');
         keys.forEach((key) => {
-          const keySymbols = document.createElement('button');
-          keySymbols.setAttribute('id', key.code);
-          keySymbols.setAttribute('type', 'button');
-          keySymbols.setAttribute('character-en', key.character.en);
-          keySymbols.setAttribute('character-ua', key.character.ua);
-          keySymbols.setAttribute('contents-en', key.contents.en);
-          keySymbols.setAttribute('contents-ua', key.contents.ua);
-          keySymbols.setAttribute('shift-en', key.shift.en);
-          keySymbols.setAttribute('shift-ua', key.shift.ua);
-          keySymbols.classList.add('key', key.code);
-          if (this.layout === 'en'){
-            keySymbols.textContent = key.contents.en;
-          }else{
-            keySymbols.textContent = key.contents.ua;
-          }
-          this.keyboardElem.appendChild(keySymbols);
-          this.keys.push(keySymbols);
+            const keySymbols = document.createElement('button');
+            keySymbols.setAttribute('id', key.code);
+            keySymbols.setAttribute('type', 'button');
+            keySymbols.setAttribute('character-en', key.character.en);
+            keySymbols.setAttribute('character-ua', key.character.ua);
+            keySymbols.setAttribute('contents-en', key.contents.en);
+            keySymbols.setAttribute('contents-ua', key.contents.ua);
+            keySymbols.setAttribute('shift-en', key.shift.en);
+            keySymbols.setAttribute('shift-ua', key.shift.ua);
+            keySymbols.classList.add('key', key.code);
+            if (this.layout === 'en'){
+                keySymbols.textContent = key.contents.en;
+            }else{
+                keySymbols.textContent = key.contents.ua;
+            }
+            this.keyboardElem.appendChild(keySymbols);
+            this.keys.push(keySymbols);
         });
       }
 
@@ -40,13 +40,13 @@ class Keyboard {
         let startOfPointer = this.textareaElem.selectionStart;
         let endOfPointer = this.textareaElem.selectionEnd;
         if (this.textareaElem.selectionStart === this.textareaElem.selectionEnd){
-          if (param === 'Delete') endOfPointer += 1;
-          else if(param === 'Backspace'){
-            startOfPointer = Math.max(0, startOfPointer - 1);
-          } 
+            if (param === 'Delete') endOfPointer += 1;
+            else if(param === 'Backspace'){
+                startOfPointer = Math.max(0, startOfPointer - 1);
+            } 
         }
         if (param === 'Delete' || param === 'Backspace'){
-          this.textareaElem.setRangeText('', startOfPointer, endOfPointer);
+            this.textareaElem.setRangeText('', startOfPointer, endOfPointer);
         }else this.textareaElem.setRangeText(text);
     
         this.textareaElem.selectionStart = startOfPointer + text.length;
@@ -71,6 +71,73 @@ class Keyboard {
               }else{
                 key.innerText = key.getAttribute('contents-ua');
               }
+        });
+    }
+
+    //event listeners for different keys, including layout change
+    addEventListeners(){
+        document.addEventListener('keydown', (keyEvent) => {
+            const key = document.getElementById(keyEvent.code);
+                if (key){
+                key.classList.add('pressed');
+                keyEvent.preventDefault();
+                const characterEn = key.getAttribute('character-en');
+                if ((keyEvent.code === 'ShiftLeft' || keyEvent.code === 'ShiftRight') && !keyEvent.repeat){
+                    this.shiftText(true);
+                }else if (keyEvent.code === 'CapsLock' && !keyEvent.repeat){
+                    this.shiftText(false);
+                    if (this.isCaps) key.classList.remove('pressed');
+                    this.isCaps = !this.isCaps;
+                }else if (keyEvent.metaKey && keyEvent.ctrlKey) {
+                    this.layout = this.layout === 'ua' ? 'en' : 'ua';
+                    localStorage.setItem('language', this.layout);
+                    this.keys.forEach((key) => {
+                        if (this.layout === 'en'){
+                            key.innerText = key.getAttribute('contents-en');
+                        }else if (this.layout === 'ua'){
+                            key.innerText = key.getAttribute('contents-ua');
+                        }
+                    });
+                }else if (keyEvent.code === 'Backspace') this.workWithText('', 'Backspace');
+                else if (keyEvent.code === 'Delete') this.workWithText('', 'Delete');
+                else if (keyEvent.code === 'Enter') this.workWithText('\n');
+                else if (keyEvent.code === 'Tab') this.workWithText('    ');
+                else if (characterEn !== 'func') this.workWithText(key.textContent);
+          }
+        });
+        
+        //removing styles when unpressed
+        document.addEventListener('keyup', (keyEvent) => {
+            const key = document.getElementById(keyEvent.code);
+            if (key) {
+                if (keyEvent.code !== 'CapsLock') key.classList.remove('pressed');
+                if (keyEvent.code === 'ShiftLeft' || keyEvent.code === 'ShiftRight') this.shiftText(true);
+            }
+        });
+        
+
+        //events for mouse click
+        this.keyboardElem.addEventListener('mousedown', (event) => {
+            const eventKeyDown = new KeyboardEvent('keydown', {
+                code: event.target.id,
+            });
+            document.dispatchEvent(eventKeyDown);
+            this.isDown = true;
+        });
+    
+        this.keyboardElem.addEventListener('mouseup', (event) => {
+            const eventKeyUp = new KeyboardEvent('keyup', { code: event.target.id });
+            document.dispatchEvent(eventKeyUp);
+            this.isDown = false;
+        });
+    
+        this.keyboardElem.addEventListener('mouseout', (event) => {
+            if (this.isDown) {
+                const eventKeyUp = new KeyboardEvent('keyup', {
+                code: event.target.id,
+                });
+                document.dispatchEvent(eventKeyUp);
+            }
         });
     }
 }
@@ -100,4 +167,4 @@ document.body.appendChild(wrapper);
 //adding keyboard to the page
 const keyboardOnPage = new Keyboard(keyboardElem, textarea);
 keyboardOnPage.createKeyboard();
-// keyboardOnPage.addEventListeners();
+keyboardOnPage.addEventListeners();
