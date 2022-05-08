@@ -33,6 +33,21 @@ class Keyboard {
           this.keys.push(keySymbols);
         });
       }
+
+      workWithText(text, param) {
+        let startOfPointer = this.textareaElem.selectionStart;
+        let endOfPointer = this.textareaElem.selectionEnd;
+        if (this.textareaElem.selectionStart === this.textareaElem.selectionEnd) {
+          if (param === 'Delete') endOfPointer += 1;
+          else if (param === 'Backspace') startOfPointer = Math.max(0, startOfPointer - 1);
+        }
+        if (param === 'Delete' || param === 'Backspace') {
+          this.textareaElem.setRangeText('', startOfPointer, endOfPointer);
+        } else this.textareaElem.setRangeText(text);
+    
+        this.textareaElem.selectionStart = startOfPointer + text.length;
+        this.textareaElem.selectionEnd = this.textareaElem.selectionStart;
+      }
 }
     
     
