@@ -1,5 +1,41 @@
-import keys from './keys'
+import keys from './keys.js'
 
+class Keyboard {
+    constructor(keyboardElem, textareaElem) {
+      this.keyboardElem = keyboardElem;
+      this.textareaElem = textareaElem;
+      this.isCaps = false;
+      this.isDown = false;
+      this.layout = localStorage.getItem('language') === 'ua' ? 'ua' : 'en';
+      this.keys = [];
+    }
+
+    //adding buttons from keys.js and setting attributes for them
+    createKeyboard() {
+        this.keyboardElem.classList.add('keyboard');
+        keys.forEach((key) => {
+          const keySymbols = document.createElement('button');
+          keySymbols.setAttribute('id', key.code);
+          keySymbols.setAttribute('type', 'button');
+          keySymbols.setAttribute('character-en', key.character.en);
+          keySymbols.setAttribute('character-ua', key.character.ua);
+          keySymbols.setAttribute('contents-en', key.contents.en);
+          keySymbols.setAttribute('contents-ua', key.contents.ua);
+          keySymbols.setAttribute('shift-en', key.shift.en);
+          keySymbols.setAttribute('shift-ua', key.shift.ua);
+          keySymbols.classList.add('key', key.code);
+          if (this.layout === 'en'){
+            keySymbols.textContent = key.contents.en;
+          }else{
+            keySymbols.textContent = key.contents.ua;
+          }
+          this.keyboardElem.appendChild(keySymbols);
+          this.keys.push(keySymbols);
+        });
+      }
+}
+    
+    
 //create elements
 const wrapper = document.createElement('div');
 const title = document.createElement('h1');
@@ -22,9 +58,6 @@ wrapper.appendChild(keyboardElem);
 document.body.appendChild(wrapper);
 
 //adding keyboard to the page
-const keyboardObj = new Keyboard(keyboardElem, textarea);
-keyboardObj.keyboardGen();
-keyboardObj.addListeners();
-
-//locking focus on textarea
-textarea.focus();
+const keyboardOnPage = new Keyboard(keyboardElem, textarea);
+keyboardOnPage.createKeyboard();
+// keyboardOnPage.addEventListeners();
