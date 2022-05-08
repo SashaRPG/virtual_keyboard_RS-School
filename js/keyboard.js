@@ -11,7 +11,7 @@ class Keyboard {
     }
 
     //adding buttons from keys.js and setting attributes for them
-    createKeyboard() {
+    createKeyboard(){
         this.keyboardElem.classList.add('keyboard');
         keys.forEach((key) => {
           const keySymbols = document.createElement('button');
@@ -34,20 +34,45 @@ class Keyboard {
         });
       }
 
-      workWithText(text, param) {
+    
+    //moving cursor through text, delete and backspace functionality
+    workWithText(text, param){
         let startOfPointer = this.textareaElem.selectionStart;
         let endOfPointer = this.textareaElem.selectionEnd;
-        if (this.textareaElem.selectionStart === this.textareaElem.selectionEnd) {
+        if (this.textareaElem.selectionStart === this.textareaElem.selectionEnd){
           if (param === 'Delete') endOfPointer += 1;
-          else if (param === 'Backspace') startOfPointer = Math.max(0, startOfPointer - 1);
+          else if(param === 'Backspace'){
+            startOfPointer = Math.max(0, startOfPointer - 1);
+          } 
         }
-        if (param === 'Delete' || param === 'Backspace') {
+        if (param === 'Delete' || param === 'Backspace'){
           this.textareaElem.setRangeText('', startOfPointer, endOfPointer);
-        } else this.textareaElem.setRangeText(text);
+        }else this.textareaElem.setRangeText(text);
     
         this.textareaElem.selectionStart = startOfPointer + text.length;
         this.textareaElem.selectionEnd = this.textareaElem.selectionStart;
-      }
+    }
+
+    //interacting with Shift
+    shiftText(capsOff){
+        this.keys.forEach((key) => {
+            if (capsOff || key.getAttribute('character-en') === 'letter'){
+                const tmp = key.getAttribute('contents-en');
+                key.setAttribute('contents-en', key.getAttribute('shift-en'));
+                key.setAttribute('shift-en', tmp);
+            }
+            if (capsOff || key.getAttribute('character-ua') === 'letter'){
+                const tmp = key.getAttribute('contents-ua');
+                key.setAttribute('contents-ua', key.getAttribute('shift-ua'));
+                key.setAttribute('shift-ua', tmp);
+            }
+            if (this.layout === 'en'){
+                key.innerText = key.getAttribute('contents-en');
+              }else{
+                key.innerText = key.getAttribute('contents-ua');
+              }
+        });
+    }
 }
     
     
