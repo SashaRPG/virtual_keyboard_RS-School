@@ -1,0 +1,88 @@
+body{
+    background-color: rgb(141, 141, 141);
+}
+
+h2 {
+    font-size: 1.05rem;
+    font-style: italic;
+    text-align: center;
+}
+.wrapper {
+    margin: 0 auto;
+    width: 1200px;
+}
+
+
+.wrapper textarea {
+    width: 100%;
+    margin: 0 auto 20px;
+    height: 150px;
+    resize: none;
+    word-break:break-all
+}
+
+.wrapper .keyboard {
+    background: #000000;
+    border-radius: 5px;
+    display: grid;
+    grid-template-columns: repeat(15, 1fr);
+    grid-auto-rows: 40px;
+    padding: 7px;
+    gap: 7px;
+    grid-template-areas: ".... .... .... .... .... .... .... .... .... .... . . . bcks bcks"
+                         ".... .... .... .... .... .... .... .... .... .... . . . .... ...."
+                         "caps caps .... .... .... .... .... .... .... .... . . . entr entr"
+                         "shtl shtl .... .... .... .... .... .... .... .... . . . .... shtr"
+                         ".... .... .... .... spac spac spac spac spac spac . . . .... ...."
+}
+
+.wrapper .keyboard .key {
+    color: #ffffff;
+    background: #8a8686;
+    border-radius: 10px;
+    cursor: pointer;
+    border: 1px solid white;
+    transition:background-color 0.2s
+}
+
+.wrapper .keyboard .key:hover {
+    background-color:#a6bb59
+}
+
+.wrapper .keyboard .key.pressed {
+    background-color:#ffffff;
+    color: #000;
+}
+
+.wrapper .keyboard .Backspace {
+    grid-area:bcks
+}
+
+.wrapper .keyboard .ShiftLeft {
+    grid-area:shtl
+}
+
+.wrapper .keyboard .ShiftRight {
+    grid-area:shtr
+}
+
+.wrapper .keyboard .CapsLock {
+    grid-area:caps
+}
+
+.wrapper .keyboard .Enter {
+    grid-area:entr
+}
+
+.wrapper .keyboard .Space {
+    grid-area:spac
+}
+
+.wrapper .keyboard .Backspace, .wrapper .keyboard .Tab, .wrapper .keyboard .Delete, .wrapper .keyboard .CapsLock, .wrapper .keyboard .Enter, .wrapper .keyboard .ShiftLeft, .wrapper .keyboard .ShiftRight, .wrapper .keyboard .ControlLeft, .wrapper .keyboard .ControlRight, .wrapper .keyboard .AltLeft, .wrapper .keyboard .AltRight, .wrapper .keyboard .Fn, .wrapper .keyboard .MetaLeft, .wrapper .keyboard .MetaRight {
+    background:#3e3d3d
+}
+
+.wrapper h1 {
+    text-align: center;
+}
+

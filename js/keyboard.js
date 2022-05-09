@@ -168,3 +168,6 @@ document.body.appendChild(wrapper);
 const keyboardOnPage = new Keyboard(keyboardElem, textarea);
 keyboardOnPage.createKeyboard();
 keyboardOnPage.addEventListeners();
+//keeping focus while typing
+textarea.focus();
+textarea.onblur = () => textarea.focus();
